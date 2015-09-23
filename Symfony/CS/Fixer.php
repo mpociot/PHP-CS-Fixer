@@ -20,6 +20,7 @@ use Symfony\Component\Finder\SplFileInfo as FinderSplFileInfo;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\CS\Error\Error;
 use Symfony\CS\Error\ErrorsManager;
+use Symfony\CS\Fixer\Contrib\HeaderCommentFixer;
 use Symfony\CS\Linter\LinterInterface;
 use Symfony\CS\Linter\LintingException;
 use Symfony\CS\Linter\NullLinter;
@@ -166,7 +167,8 @@ class Fixer
         $fileCacheManager = new FileCacheManager(
             $config->usingCache(),
             $config->getCacheFile(),
-            $config->getFixers()
+            $config->getFixers(),
+            HeaderCommentFixer::getHeader()
         );
 
         $processed = array();

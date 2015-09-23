@@ -22,6 +22,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
  *  - cache is not available,
  *  - fixer version changed,
  *  - fixers list is changed,
+ *  - the header has changed,
  *  - file is new,
  *  - file changed.
  *
@@ -34,17 +35,21 @@ final class FileCacheManager
     private $cacheFile;
     private $isEnabled;
     private $fixers;
+    private $header;
     private $newHashes = array();
     private $oldHashes = array();
 
-    public function __construct($isEnabled, $cacheFile, array $fixers)
+    public function __construct($isEnabled, $cacheFile, array $fixers, $header)
     {
         $this->isEnabled = $isEnabled;
         $this->cacheFile = $cacheFile;
+
         $this->fixers = array_map(function (FixerInterface $f) {
             return $f->getName();
         }, $fixers);
         sort($this->fixers);
+
+        $this->header = sha1($header);
 
         $this->readFromFile();
     }
@@ -88,13 +93,13 @@ final class FileCacheManager
         return crc32($content);
     }
 
-    private function isCacheStale($cacheVersion, $fixers)
+    private function isCacheStale($cacheVersion, $fixers, $header)
     {
         if (!$this->isEnabled) {
             return true;
         }
 
-        return ToolInfo::getVersion() !== $cacheVersion || $this->fixers !== $fixers;
+        return ToolInfo::getVersion() !== $cacheVersion || $this->fixers !== $fixers || $this->header !== $header;
     }
 
     private function readFromFile()
@@ -111,7 +116,7 @@ final class FileCacheManager
         $data = unserialize($content);
 
         // Set hashes only if the cache is fresh, otherwise we need to parse all files
-        if (!$this->isCacheStale($data['version'], $data['fixers'])) {
+        if (!$this->isCacheStale($data['version'], $data['fixers'], isset($data['header']) ? $data['header'] : null)) {
             $this->oldHashes = $data['hashes'];
         }
     }
@@ -126,6 +131,7 @@ final class FileCacheManager
             array(
                 'version' => ToolInfo::getVersion(),
                 'fixers' => $this->fixers,
+                'header' => $this->header,
                 'hashes' => $this->newHashes,
             )
         );

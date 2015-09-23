@@ -16,6 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\CS\Error\Error;
 use Symfony\CS\FileCacheManager;
 use Symfony\CS\Fixer;
+use Symfony\CS\Fixer\Contrib\HeaderCommentFixer;
 use Symfony\CS\FixerInterface;
 
 /**
@@ -150,7 +151,7 @@ abstract class AbstractIntegrationTest extends \PHPUnit_Framework_TestCase
             throw new IOException(sprintf('Failed to write to tmp. file "%s".', $tmpFile));
         }
 
-        $changed = $fixer->fixFile(new \SplFileInfo($tmpFile), $fixers, false, true, new FileCacheManager(false, null, $fixers));
+        $changed = $fixer->fixFile(new \SplFileInfo($tmpFile), $fixers, false, true, new FileCacheManager(false, null, $fixers, HeaderCommentFixer::getHeader()));
 
         $errorsManager = $fixer->getErrorsManager();
 
