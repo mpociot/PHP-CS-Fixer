@@ -31,8 +31,6 @@ use Symfony\CS\Tokenizer\Tokens;
  */
 class Fixer
 {
-    const VERSION = '2.0-DEV';
-
     protected $fixers = array();
     protected $configs = array();
 
@@ -194,12 +192,7 @@ class Fixer
     {
         $new = $old = file_get_contents($file->getRealpath());
 
-        if (
-            '' === $old
-            || !$fileCacheManager->needFixing($this->getFileRelativePathname($file), $old)
-            // PHP 5.3 has a broken implementation of token_get_all when the file uses __halt_compiler() starting in 5.3.6
-            || (PHP_VERSION_ID >= 50306 && PHP_VERSION_ID < 50400 && false !== stripos($old, '__halt_compiler()'))
-        ) {
+        if ('' === $old || !$fileCacheManager->needFixing($this->getFileRelativePathname($file), $old)) {
             $this->dispatchEvent(
                 FixerFileProcessedEvent::NAME,
                 FixerFileProcessedEvent::create()->setStatus(FixerFileProcessedEvent::STATUS_SKIPPED)
