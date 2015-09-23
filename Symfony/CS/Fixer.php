@@ -169,7 +169,17 @@ class Fixer
             $config->getFixers()
         );
 
+        $processed = array();
+
         foreach ($config->getFinder() as $file) {
+            $name = $this->getFileRelativePathname($file);
+
+            if (in_array($name, $processed, true)) {
+                continue;
+            }
+
+            $processed[] = $name;
+
             if ($file->isDir() || $file->isLink()) {
                 continue;
             }
@@ -177,7 +187,7 @@ class Fixer
             $this->stopwatch->start($this->getFileRelativePathname($file));
 
             if ($fixInfo = $this->fixFile($file, $fixers, $dryRun, $diff, $fileCacheManager)) {
-                $changed[$this->getFileRelativePathname($file)] = $fixInfo;
+                $changed[$name] = $fixInfo;
             }
 
             $this->stopwatch->stop($this->getFileRelativePathname($file));
