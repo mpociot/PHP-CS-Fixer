@@ -75,6 +75,13 @@ Choose from the list of available fixers:
                         PHP code MUST use only UTF-8
                         without BOM (remove BOM).
 
+* **psr4** [PSR-1]
+                        Classes must be at least one
+                        namespace deep and the class
+                        name should match the file
+                        name. Warning: This could
+                        change code behavior.
+
 * **short_tag** [PSR-1]
                         PHP code must use the long
                         <?php ?> tags or the
