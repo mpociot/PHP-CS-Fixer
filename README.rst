@@ -402,6 +402,12 @@ Choose from the list of available fixers:
                         the class name should match
                         the file name. (Risky fixer!)
 
+* **psr4** [@PSR1, @PSR2, @Symfony]
+                        Classes must be at least one
+                        namespace deep and the class
+                        name should match the file
+                        name. (Risky fixer!)
+
 * **remove_leading_slash_use** [@Symfony]
                         Remove leading slashes in use
                         clauses.
