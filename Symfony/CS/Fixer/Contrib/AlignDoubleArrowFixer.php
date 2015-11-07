@@ -95,7 +95,10 @@ class AlignDoubleArrowFixer extends AbstractAlignFixer
                 $until = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $from);
                 $index = $until;
 
-                $this->injectArrayAlignmentPlaceholders($tokens, $from, $until);
+                ++$this->deepestLevel;
+                ++$this->currentLevel;
+                $this->injectAlignmentPlaceholders($tokens, $from, $until);
+                --$this->currentLevel;
                 continue;
             }
 
@@ -109,7 +112,10 @@ class AlignDoubleArrowFixer extends AbstractAlignFixer
                 $until = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_SQUARE_BRACE, $from);
                 $index = $until;
 
-                $this->injectArrayAlignmentPlaceholders($tokens, $from + 1, $until - 1);
+                ++$this->deepestLevel;
+                ++$this->currentLevel;
+                $this->injectAlignmentPlaceholders($tokens, $from + 1, $until - 1);
+                --$this->currentLevel;
                 continue;
             }
 
@@ -147,7 +153,9 @@ class AlignDoubleArrowFixer extends AbstractAlignFixer
                         $blockType = Tokens::detectBlockType($tokens[$arrayStartIndex]);
                         $arrayEndIndex = $tokens->findBlockEnd($blockType['type'], $arrayStartIndex);
 
-                        if ($tokens->isPartialCodeMultiline($arrayStartIndex, $arrayEndIndex)) {
+                        $arrayContent = $tokens->generatePartialCode($arrayStartIndex, $arrayEndIndex);
+
+                        if (false !== strpos($arrayContent, "\n")) {
                             break;
                         }
                     }
@@ -155,22 +163,6 @@ class AlignDoubleArrowFixer extends AbstractAlignFixer
                     ++$index;
                 }
             }
-        }
-    }
-
-    /**
-     * @param Tokens $tokens
-     * @param int    $from
-     * @param int    $until
-     */
-    private function injectArrayAlignmentPlaceholders(Tokens $tokens, $from, $until)
-    {
-        // Only inject placeholders for multi-line arrays
-        if ($tokens->isPartialCodeMultiline($from, $until)) {
-            ++$this->deepestLevel;
-            ++$this->currentLevel;
-            $this->injectAlignmentPlaceholders($tokens, $from, $until);
-            --$this->currentLevel;
         }
     }
 }
