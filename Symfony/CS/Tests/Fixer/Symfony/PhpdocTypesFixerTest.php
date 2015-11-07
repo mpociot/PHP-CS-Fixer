@@ -89,4 +89,29 @@ EOF;
 EOF;
         $this->makeTest($expected, $input);
     }
+
+    public function testPropertyFix()
+    {
+        $expected = <<<'EOF'
+<?php
+/**
+ * @property int $foo
+ * @property-read boolean $bar
+ * @property-write mixed $baz
+ */
+
+EOF;
+
+        $input = <<<'EOF'
+<?php
+/**
+ * @property Int $foo
+ * @property-read Boolean $bar
+ * @property-write MIXED $baz
+ */
+
+EOF;
+
+        $this->makeTest($expected, $input);
+    }
 }
