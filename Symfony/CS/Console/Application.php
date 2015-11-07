@@ -14,7 +14,6 @@ namespace Symfony\CS\Console;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\CS\Console\Command\FixCommand;
 use Symfony\CS\Console\Command\ReadmeCommand;
-use Symfony\CS\Console\Command\SelfUpdateCommand;
 use Symfony\CS\Fixer;
 
 /**
@@ -31,11 +30,10 @@ final class Application extends BaseApplication
     {
         error_reporting(-1);
 
-        parent::__construct('PHP CS Fixer', Fixer::VERSION);
+        parent::__construct('PHP CS Fixer');
 
         $this->add(new FixCommand());
         $this->add(new ReadmeCommand());
-        $this->add(new SelfUpdateCommand());
     }
 
     public function getLongVersion()

@@ -26,13 +26,7 @@ final class ShortEchoTagFixerTest extends AbstractFixerTestCase
      */
     public function testOneLineFix($expected, $input = null)
     {
-        /*
-         * short_echo_tag setting is ignored by HHVM
-         * @see https://github.com/facebook/hhvm/issues/4809
-         */
-        if (!defined('HHVM_VERSION')) {
-            $this->doTest($expected, $input);
-        }
+        $this->doTest($expected, $input);
     }
 
     public function provideClosingTagExamples()
