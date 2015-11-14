@@ -504,6 +504,10 @@ Choose from the list of available fixers:
                         the class name should match
                         the file name. (Risky fixer!)
 
+* **psr4**
+                        Class names should match the
+                        file name. (Risky fixer!)
+
 * **remove_leading_slash_use** [@Symfony]
                         Remove leading slashes in use
                         clauses.
