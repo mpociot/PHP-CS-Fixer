@@ -21,28 +21,24 @@ namespace Symfony\CS;
 final class ToolInfo
 {
     const COMPOSER_INSTALLED_FILE = '/../../composer/installed.json';
-    const COMPOSER_PACKAGE_NAME = 'fabpot/php-cs-fixer';
+    const COMPOSER_PACKAGE_NAME = 'styleci/php-cs-fixer';
 
-    public static function getComposerVersion()
+    public static function getVersion()
     {
         static $result;
 
-        if (!self::isInstalledByComposer()) {
-            throw new \LogicException('Can not get composer version for tool not installed by composer.');
-        }
-
         if (null === $result) {
-            $composerInstalled = json_decode(file_get_contents(self::getScriptDir().self::COMPOSER_INSTALLED_FILE), true);
-
-            foreach ($composerInstalled as $package) {
-                if (self::COMPOSER_PACKAGE_NAME === $package['name']) {
-                    $result = $package['version'].'#'.$package['dist']['reference'];
-                    break;
+            if (file_exists($path = self::getScriptDir().self::COMPOSER_INSTALLED_FILE)) {
+                foreach (json_decode(file_get_contents($path), true) as $package) {
+                    if (self::COMPOSER_PACKAGE_NAME === $package['name']) {
+                        $result = $package['version'].'#'.$package['dist']['reference'];
+                        break;
+                    }
                 }
             }
         }
 
-        return $result;
+        return $result ?: '';
     }
 
     private static function getScriptDir()
@@ -64,37 +60,10 @@ final class ToolInfo
             }
 
             $result = dirname($script);
-        }
 
-        return $result;
-    }
-
-    public static function getVersion()
-    {
-        if (self::isInstalledByComposer()) {
-            return Fixer::VERSION.':'.self::getComposerVersion();
-        }
-
-        return Fixer::VERSION;
-    }
-
-    public static function isInstalledAsPhar()
-    {
-        static $result;
-
-        if (null === $result) {
-            $result = 'phar://' === substr(__DIR__, 0, 7);
-        }
-
-        return $result;
-    }
-
-    public static function isInstalledByComposer()
-    {
-        static $result;
-
-        if (null === $result) {
-            $result = !self::isInstalledAsPhar() && file_exists(self::getScriptDir().self::COMPOSER_INSTALLED_FILE);
+            if ('.' === $result) {
+                $result = realpath(__DIR__.'/../../');
+            }
         }
 
         return $result;

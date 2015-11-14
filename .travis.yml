@@ -1,30 +1,14 @@
 language: php
 
-matrix:
-    fast_finish: true
-    include:
-        - php: 5.3
-          env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
-        - php: 5.3
-        - php: 5.4
-        - php: 5.5
-        - php: 5.6
-        - php: 7.0
-        - php: hhvm
+php:
+  - 5.6
+  - 7.0
 
 sudo: false
 
-cache:
-    directories:
-        - $HOME/.composer/cache
-
 install:
-    - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
+  - travis_retry composer install --no-interaction --prefer-source
 
 script:
-    - phpunit --verbose --coverage-clover build/logs/clover.xml
-    - phpenv config-rm xdebug.ini || return 0
-    - php php-cs-fixer --diff --dry-run -v fix
-
-after_success:
-    - php vendor/bin/coveralls -v
+  - vendor/bin/phpunit
+  - php php-cs-fixer --diff --dry-run -v fix
