@@ -91,4 +91,60 @@ EOF;
 EOF;
         $this->doTest($expected, $input);
     }
+
+    public function testPropertyFix()
+    {
+        $expected = <<<'EOF'
+<?php
+/**
+ * @property int $foo
+ * @property-read boolean $bar
+ * @property-write mixed $baz
+ */
+
+EOF;
+
+        $input = <<<'EOF'
+<?php
+/**
+ * @property Int $foo
+ * @property-read Boolean $bar
+ * @property-write MIXED $baz
+ */
+
+EOF;
+
+        $this->doTest($expected, $input);
+    }
+
+    public function testInlineDoc()
+    {
+        $expected = <<<'EOF'
+<?php
+    /**
+     * Does stuffs with stuffs.
+     *
+     * @param array $stuffs {
+     *     @var bool $foo
+     *     @var int  $bar
+     * }
+     */
+
+EOF;
+
+        $input = <<<'EOF'
+<?php
+    /**
+     * Does stuffs with stuffs.
+     *
+     * @param array $stuffs {
+     *     @var Bool $foo
+     *     @var INT  $bar
+     * }
+     */
+
+EOF;
+
+        $this->doTest($expected, $input);
+    }
 }

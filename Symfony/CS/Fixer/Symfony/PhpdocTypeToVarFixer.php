@@ -11,48 +11,33 @@
 
 namespace Symfony\CS\Fixer\Symfony;
 
-use Symfony\CS\AbstractFixer;
-use Symfony\CS\DocBlock\DocBlock;
-use Symfony\CS\Tokenizer\Tokens;
+use Symfony\CS\AbstractPhpdocTagsFixer;
 
 /**
  * @author Graham Campbell <graham@mineuk.com>
  */
-final class PhpdocTypeToVarFixer extends AbstractFixer
+final class PhpdocTypeToVarFixer extends AbstractPhpdocTagsFixer
 {
     /**
-     * {@inheritdoc}
+     * The tag to search for.
+     *
+     * @var string[]
      */
-    public function isCandidate(Tokens $tokens)
-    {
-        return $tokens->isTokenKindFound(T_DOC_COMMENT);
-    }
+    protected static $search = 'type';
 
     /**
-     * {@inheritdoc}
+     * The input tag.
+     *
+     * @var string
      */
-    public function fix(\SplFileInfo $file, Tokens $tokens)
-    {
-        foreach ($tokens as $token) {
-            if (!$token->isGivenKind(T_DOC_COMMENT)) {
-                continue;
-            }
+    protected static $input = '@type';
 
-            $doc = new DocBlock($token->getContent());
-            $annotations = $doc->getAnnotationsOfType('type');
-
-            if (empty($annotations)) {
-                continue;
-            }
-
-            foreach ($annotations as $annotation) {
-                $line = $doc->getLine($annotation->getStart());
-                $line->setContent(str_replace('@type', '@var', $line->getContent()));
-            }
-
-            $token->setContent($doc->getContent());
-        }
-    }
+    /**
+     * The output tag.
+     *
+     * @var string
+     */
+    protected static $output = '@var';
 
     /**
      * {@inheritdoc}
