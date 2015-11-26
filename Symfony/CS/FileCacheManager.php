@@ -60,7 +60,7 @@ final class FileCacheManager
 
     public function needFixing($file, $fileContent)
     {
-        if (!$this->isCacheAvailable()) {
+        if (!$this->isEnabled) {
             return true;
         }
 
@@ -80,7 +80,7 @@ final class FileCacheManager
 
     public function setFile($file, $fileContent)
     {
-        if (!$this->isCacheAvailable()) {
+        if (!$this->isEnabled) {
             return;
         }
 
@@ -92,20 +92,9 @@ final class FileCacheManager
         return crc32($content);
     }
 
-    private function isCacheAvailable()
-    {
-        static $result;
-
-        if (null === $result) {
-            $result = $this->isEnabled && (ToolInfo::isInstalledAsPhar() || ToolInfo::isInstalledByComposer());
-        }
-
-        return $result;
-    }
-
     private function isCacheStale($cacheVersion, $rules)
     {
-        if (!$this->isCacheAvailable()) {
+        if (!$this->isEnabled) {
             return true;
         }
 
@@ -114,7 +103,7 @@ final class FileCacheManager
 
     private function readFromFile()
     {
-        if (!$this->isCacheAvailable()) {
+        if (!$this->isEnabled) {
             return;
         }
 
@@ -137,7 +126,7 @@ final class FileCacheManager
 
     private function saveToFile()
     {
-        if (!$this->isCacheAvailable()) {
+        if (!$this->isEnabled) {
             return;
         }
 

@@ -340,11 +340,7 @@ PHP;
      */
     public function testShortOpenTagMonolithicPhpDetection($source, $monolitic)
     {
-        /*
-         * short_open_tag setting is ignored by HHVM
-         * @see https://github.com/facebook/hhvm/issues/4758
-         */
-        if (!ini_get('short_open_tag') && !defined('HHVM_VERSION')) {
+        if (!ini_get('short_open_tag')) {
             // Short open tag is parsed as T_INLINE_HTML
             $monolitic = false;
         }
@@ -365,40 +361,6 @@ PHP;
             array("<?\n?><?=' ';\n", false),
             array("<?php\n?><?\n", false),
             array("<?=' '\n?><?\n", false),
-        );
-    }
-
-    /**
-     * @dataProvider provideShortOpenTagEchoMonolithicPhpDetection
-     *
-     * @param string $source
-     * @param bool   $monolitic
-     */
-    public function testShortOpenTagEchoMonolithicPhpDetection($source, $monolitic)
-    {
-        /*
-         * short_open_tag setting is ignored by HHVM
-         * @see https://github.com/facebook/hhvm/issues/4758
-         */
-        if (!ini_get('short_open_tag') && 50400 > PHP_VERSION_ID && !defined('HHVM_VERSION')) {
-            // Short open tag echo is parsed as T_INLINE_HTML
-            $monolitic = false;
-        }
-
-        $tokens = Tokens::fromCode($source);
-        $this->assertSame($monolitic, $tokens->isMonolithicPhp());
-    }
-
-    public function provideShortOpenTagEchoMonolithicPhpDetection()
-    {
-        return array(
-            array("<?=' ';\n", true),
-            array("<?=' '?>", true),
-            array(" <?=' ';\n", false),
-            array("<?=' '?> ", false),
-            array("<?php\n?><?=' ';\n", false),
-            array("<?=' '\n?><?php\n", false),
-            array("<?=' '\n?><?=' ';\n", false),
         );
     }
 

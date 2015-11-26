@@ -1,35 +1,14 @@
 language: php
 
-matrix:
-    fast_finish: true
-    include:
-        - php: 5.3
-          env: 'COMPOSER_FLAGS="--prefer-stable --prefer-lowest"'
-        - php: 5.4
-        - php: 5.5
-        - php: 5.6
-          env: SYMFONY_VERSION="~2.7"
-        - php: 5.6
-          env: SYMFONY_VERSION="~3.0@dev" COMPOSER_FLAGS="--prefer-stable"
-        - php: 7.0
-        - php: hhvm
+php:
+  - 5.6
+  - 7.0
 
 sudo: false
 
-cache:
-    directories:
-        - $HOME/.composer/cache
-
-before_install:
-    - 'if [ "$SYMFONY_VERSION" != "" ]; then sed -i "s/\"symfony\/\([^\"]*\)\": \"[^\"]*\"/\"symfony\/\1\": \"$SYMFONY_VERSION\"/g" composer.json; fi'
-
 install:
-    - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction
+  - travis_retry composer install --no-interaction --prefer-source
 
 script:
-    - composer test-ci
-    - phpenv config-rm xdebug.ini || return 0
-    - php php-cs-fixer --diff --dry-run -v fix
-
-after_success:
-    - php vendor/bin/coveralls -v
+  - vendor/bin/phpunit
+  - php php-cs-fixer --diff --dry-run -v fix

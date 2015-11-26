@@ -13,7 +13,7 @@
  * If you are adding functionality or fixing a bug - add a test!
  * Fix project itself: `php php-cs-fixer fix`.
  * Regenerate readme: `php php-cs-fixer readme > README.rst`. Do not modify `README.rst` manually!
- * Check if tests pass: `phpunit` [(4.*)](https://phpunit.de/manual/current/en/installation.html)
+ * Check if tests pass: `phpunit` [(5.*)](https://phpunit.de/manual/current/en/installation.html)
 
 ## Opening a pull request
 
@@ -24,11 +24,6 @@ You can do some things to increase the chance that your pull request is accepted
  * Follow the conventions used in the project.
  * Remember about tests and documentation.
  * Don't bump version.
-
-## Making new fixers
-
-There is a [cookbook](https://github.com/FriendsOfPHP/PHP-CS-Fixer/blob/master/COOKBOOK-FIXERS.md) with basic instructions on how to build a new fixer. Consider reading it
-before opening a PR.
 
 ## Project's standards
 
