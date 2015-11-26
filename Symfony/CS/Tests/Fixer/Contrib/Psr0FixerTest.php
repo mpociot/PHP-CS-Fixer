@@ -170,9 +170,12 @@ EOF;
         $this->doTest($expected, null, $file, $fixer);
     }
 
-    public function testIgnoreLongExtension()
+    /**
+     * @dataProvider provideIgnoredCases
+     */
+    public function testIgnoreWrongNames($filename)
     {
-        $file = $this->getTestFile('Foo.class.php');
+        $file = $this->getTestFile($filename);
 
         $expected = <<<'EOF'
 <?php
@@ -181,5 +184,15 @@ class Bar {}
 EOF;
 
         $this->doTest($expected, null, $file);
+    }
+
+    public function provideIgnoredCases()
+    {
+        return array(
+            array('.php'),
+            array('Foo.class.php'),
+            array('4Foo.php'),
+            array('$#.php'),
+        );
     }
 }
