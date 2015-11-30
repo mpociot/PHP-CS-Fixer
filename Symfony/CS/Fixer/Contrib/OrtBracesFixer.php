@@ -397,7 +397,7 @@ final class OrtBracesFixer extends AbstractFixer
                 $nextNonWhitespaceIndex = $tokens->getNextNonWhitespace($index);
 
                 if (!$tokens[$nextNonWhitespaceIndex]->equals(':')) {
-                    $tokens->removeTrailingWhitespace($index);
+                    $tokens->removeTrailingWhitespace($index,' ');
                 }
 
                 $prevToken = $tokens[$index - 1];
