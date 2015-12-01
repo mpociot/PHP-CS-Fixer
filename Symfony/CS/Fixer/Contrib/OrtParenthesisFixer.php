@@ -60,12 +60,13 @@ final class OrtParenthesisFixer extends AbstractFixer
 
             $endIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $index);
 
-            // remove space after opening `(`
-            $this->removeSpaceAroundToken($tokens, $index, 1);
+            // add space before opening `(`
+            $tokens->removeTrailingWhitespace($index,' ');
+            $this->addSpaceAroundToken($tokens, $index, 1);
 
-            // remove space after closing `)` if it is not `list($a, $b, )` case
+            // add space before closing `)` if it is not `list($a, $b, )` case
             if (!$tokens[$tokens->getPrevMeaningfulToken($endIndex)]->equals(',')) {
-                $this->removeSpaceAroundToken($tokens, $endIndex, +1);
+                $this->addSpaceAroundToken($tokens, $endIndex, +1);
             }
         }
     }
@@ -85,12 +86,13 @@ final class OrtParenthesisFixer extends AbstractFixer
      * @param int    $index  The token index
      * @param int    $offset The offset where to start looking for spaces
      */
-    private function removeSpaceAroundToken(Tokens $tokens, $index, $offset)
+    private function addSpaceAroundToken(Tokens $tokens, $index, $offset)
     {
         if (!isset($tokens[$index + $offset])) {
             return;
         }
 
+        $tokens->removeTrailingWhitespace($index+$offset,' ');
         $tokens->ensureWhitespaceAtIndex($index,$offset,' ');
     }
 }
