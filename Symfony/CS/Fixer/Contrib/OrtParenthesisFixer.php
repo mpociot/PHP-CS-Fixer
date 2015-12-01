@@ -65,7 +65,7 @@ final class OrtParenthesisFixer extends AbstractFixer
             $this->addSpaceAroundToken($tokens, $index, 1);
 
             // add space before closing `)` if it is not `list($a, $b, )` case
-            if (!$tokens[$tokens->getPrevMeaningfulToken($endIndex)]->equals(',')) {
+            if (!$tokens[$tokens->getPrevMeaningfulToken($endIndex)]->equals(',') && !$tokens[$tokens->getPrevMeaningfulToken($endIndex)]->equals('(')) {
                 $this->addSpaceAroundToken($tokens, $endIndex, +1);
             }
         }
@@ -92,7 +92,6 @@ final class OrtParenthesisFixer extends AbstractFixer
             return;
         }
 
-        $tokens->removeTrailingWhitespace($index+$offset,' ');
         $tokens->ensureWhitespaceAtIndex($index,$offset,' ');
     }
 }
